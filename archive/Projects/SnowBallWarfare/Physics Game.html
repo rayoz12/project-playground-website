@@ -1,0 +1,217 @@
+﻿ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Snowball Warfare</title>
+<style type="text/css">
+
+canvas {
+           display:block;
+		   margin-left:-8px;
+		   margin-top:-8px;
+           border:1px solid #F33;
+}
+		
+.InGameDebug{
+	margin-left:0px;
+	margin-right:74%;
+	margin-top:-80px;
+	margin-bottom:0px;		
+}
+
+.BallPos{
+	margin-left:200px;
+	margin-top:-165px;
+}
+
+.AddChars{
+	margin-right:725px;
+}
+
+.DeleteChars{
+	margin-right:925px;
+}
+
+.DebugBorder{
+	border: double #000000;	
+}
+
+.Coords{
+	margin-right:74%;
+}
+
+.RunSpeed{
+	margin-top:50px;
+	margin-right:525px;
+}
+
+.Log{
+	margin-left:26.2%;
+	margin-top:-191px;
+	margin-bottom:0px;
+	max-height:260x;
+	height:270px;	
+}
+</style>
+</head>
+
+<body>
+<canvas id="canvas">Get a better browser! Opera, Internet Explorer 10, Mozilla Firefox or Chrome.</canvas>
+
+
+
+
+
+<h2>Debug Tools</h2>
+
+<div class="Debug" id="Debug">
+
+<div class="Coords DebugBorder">
+<div class="MousePos ">
+<h4>Mouse X coords:</h4><div id="MouseX">0</div>
+<h4>Mouse Y coords:</h4><div id="MouseY">0</div>
+</div>
+
+<div class="BallPos">
+<h4>Ball X coords(Only [0]):</h4><div id="BallX">0</div>
+<h4>Ball Y coords:</h4><div id="BallY">0</div>
+</div>
+
+</div><!---END Debug---->
+
+<div class="Log DebugBorder">
+<h4>Log of errors or current events <input name="ClearLog" type="button" onClick="Logging.Clear()" value="Clear" /></h4>
+
+<div id="LogOutput" style="max-height:205px; overflow:auto;">
+</div>
+</div>
+
+<div class="InGameDebug DebugBorder">
+<h4> In game Debug Options, default is true</h4>
+<p>Currently:</p> 
+<strong><div id="InGameDebugStatus"></div></strong>
+
+
+<p> 
+  <input type="button" id="InGameDebugON" value="In game Debug ON(true)" onclick="DebugOn()" />
+</p>
+<p>
+  <input type="button" id="InGameDebugOFF" value="In game Debug OFF(false)" onclick="DebugOff()" />
+</p>
+</div>
+<div class="AddChars DebugBorder">
+<form>
+  <h4>Create a New Char</h4>
+  <p>X Pos
+    <input name="NewPosX" id="NewPosX" type="text" />
+  </p>
+  <p>Y Pos
+    <input name="NewPosY" id="NewPosY" type="text" />
+  </p>
+  <p>Rotation
+    <input name="NewRotation" id="NewRotation" type="text" value="0" />
+    in degrees(Radians is converted automatically)</p>
+  <p>Mass
+    <input name="NewMass" id="NewMass" type="text" />
+  </p>
+  <p>Restitution
+    <input name="NewRestitution" type="text" id="NewRestitution" value="-0.2" />
+  </p>
+  <p>Width
+    <input name="NewWidth" id="NewWidth" type="text" />
+  </p>
+  <p>Height
+    <input name="NewHeight" id="NewHeight" type="text" />
+  </p>
+  <p>Drag Coeffcient
+    <input name="NewDrag" id="NewDrag" type="text" value="2.1" />
+  </p>
+  <p>Colour
+    <input name="NewColour" id="NewColour" type="text" />
+  </p>
+  <p>Team
+    <input name="NewTeam" id="NewTeam" type="text" />
+  </p>
+  <p>Health
+    <input name="NewHealth" id="NewHealth" type="text" />
+  </p>
+  <p>MaxHealth
+    <input name="NewMaxHealth" id="NewMaxHealth" type="text" />
+  </p>
+  <input name="NewBox" type="button" onClick="NewChar(true)" value="Create the Box" />
+</form>
+</div>
+
+
+
+<div id="DeleteBox" class="DeleteBox DebugBorder">
+<h4>Adjust Chars</h4>
+<p>
+  <select name="DelBoxSel" id="DelBoxSel">    
+  </select>
+    <input name="Refresh" type="button" onclick="PopulateList()" value="Refresh" />
+  <input name="DelBox" type="button" onClick="DeleteBox()" value="Delete Box Selected" />
+</p>
+<p><input name="Rot+10" type="button" onClick="Rotate(10)" value="Rotate the box 10 degrees" /></p>
+<input name="Rot-10" type="button" onClick="Rotate(-10)" value="Rotate the box -10 degrees" />
+</div>
+<p>
+  <input name="Randomness" type="button" value="Click for Randomness" onclick="PhysBoxTest()" /> 
+  (really just launches the boxes in a random direction)
+</p>
+<input name="PrintShapeInfo" type="button" onClick="PrintShapeInfo()" value="Console the current shape info" />
+
+</div><!--END debug div-->
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2>Bugs</h2>
+<p>- When dragging from outside ClickInRange to inside, game takes as valid and ball is fired from position in. (mouseup issue)</p>
+<p>- If you delete all the boxes, the ball loses collisions with walls.<strong>(FIXED)</strong></p>
+<p>- Drop down refreshes incorrectly when clicking refresh.</p>
+<p>- The Simulation speed adjuster doesn't work as to change the rendering speed would mean to stop and re-instate the loop with a  different interval value.--This has been <strong>abandoned</strong>(15/03/13)</p>
+<p>- When first loading the page, the game crashes when trying to draw the background image, because it could not load it in time. Find a way to display a loading screen.</p>
+<p>&nbsp;</p>
+<h2>Todo</h2>
+<p>-Make the current collision system work with rotated boxes and other objects stored in arrays.</p>
+<p>-Make properties for each object of box, i.e mass, density etc.<strong>(DONE)</strong></p>
+<p>-Try to seperate game logic calculation to rendering, therefore optimising. So the CPU doesn't have to calculate  at the same rate of rendering.<strong>(DONE)</strong></p>
+<p>-Make buttons that add/delete boxes on press.(maybe with parameters) <strong>(DONE)</strong></p>
+<p>- Add rotation to the screen objects<strong>(DONE)</strong></p>
+<p>- Work on setting a custom simulation speed.--This has been <strong>abandoned</strong>(15/03/13)</p>
+<p>- Instead of making the objects rotate 360 degrees, only allow it to rotate 180 degrees and resetting it to 0 when it goes above that. This would require the shape skins to be symmetrically designed. Advantages of this design include less of a hassle when working with collision checking with rotated sides of shapes.<strong>(DONE)</strong></p>
+<p>- Calculate the exact corner pixel values of boxes then render those, to make ease of collision checking, it will also render the boxes this way. (Have to figure out how to retrive objects property while declaring first) --This has been<strong> abandoned</strong>(15/03/13) due to changing of the project specs.</p>
+<p>- Button press tracking in game. Will work by existing mouse handler to detect X and Y value, this value will be checked against an array of displayed buttons. Non-displayed buttons will be kept in a separate array to reduce performace cost of check one big array. </p>
+<p>- New Box is broken, refer to function</p>
+<p>&nbsp;</p>
+
+
+
+<!-------General initialisation--------->
+<script>
+Canvas = document.getElementById("canvas");
+ctx = canvas.getContext("2d");
+Canvas.width=1260;
+Canvas.height=315;
+rho=1.22// When modified it changes the fluid density around objects. In(Kg/m^3) is mass density
+accg=9.81//acceleration due to gravity
+</script>
+<!-- Remember to put the rendering at the bottom, so it will always load last in the load order. This is used to help browsers who will look at the game code first and not resolve variables in other scripts in the lower load order-->
+
+<script language="JavaScript" src="Javascript/Game-related/Logging.js"></script>
+<script language="JavaScript" src="Javascript/General/ReqAnimFrame.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Players.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Objects.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Methods.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Handlers.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/TurnBased.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/AI.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Debug.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Physics.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Images.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/SoundEngine.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/GameManager.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Rendering.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/StartGame.js"></script>
+
+</body>
+</html>

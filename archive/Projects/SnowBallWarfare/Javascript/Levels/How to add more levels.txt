@@ -1,0 +1,4 @@
+-To add more chars (The placeholder boxes for now) simply use the NewChar() function (you can look at in the methods.js file in the game-related folder.
+
+
+-Add new block we use new Block

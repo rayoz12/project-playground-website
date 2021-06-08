@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Snowball Warfare</title>
+<style>
+canvas {
+	display: block;
+	margin-left: -8px;
+	border: 1px solid #F33;
+}
+.Diagrams
+{
+	margin-left:75%;
+	/*margin-top:-20%;*/
+}
+html
+{
+	height:99%;
+}
+
+body 
+{
+height:95%;
+background-repeat:no-repeat;
+background: -moz-linear-gradient(top, #6db3f2 0%, #54a3ee 50%, #3690f0 65%, #1e69de 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6db3f2), color-stop(50%,#54a3ee), color-stop(65%,#3690f0), color-stop(100%,#1e69de)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, #6db3f2 0%,#54a3ee 50%,#3690f0 65%,#1e69de 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, #6db3f2 0%,#54a3ee 50%,#3690f0 65%,#1e69de 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, #6db3f2 0%,#54a3ee 50%,#3690f0 65%,#1e69de 100%); /* IE10+ */
+background: linear-gradient(to bottom, #6db3f2 0%,#54a3ee 50%,#3690f0 65%,#1e69de 100%); /* W3C */
+}
+</style>
+</head>
+
+
+<body>
+<img id="Title" class="title" src="Assets/WebImages/Logo.png" width="1000" height="137" />
+
+<canvas id="canvas"></canvas>
+<img src="Assets/WebImages/LoadIcon.GIF" id="LoadIcon"/>
+
+<h3><strong>Before you start: </strong></h3>
+<strong>
+<p>Please maximize your browser to get the best visual experience of the game as the game size follows the size of your screen resolution.</p></strong>
+<p>To aim, move your mouse to the desired location, there is a certain limit to the power of your throw.</p>
+<p>To throw simply left click.</p>
+
+<h3><strong>What this game is about: </strong></h3>
+<p>Snowball Warfare is a new Canvas project developed by Foogle Games. Play this game in your browser, tablet or anywhere with a browser. So it's winter and it's snowing. You are enjoying your day as a snowman when suddenly thugs from the next neighbor think they can ruin your day. Snowballs are thrown, Snowmen are bruised and Snow hits the fan. Fight back and show that you won't be taken that easily.</p>
+<a href="Assets/Webpages/Help.html" target="new">Need Help? Click here.</a>
+<p>&nbsp;</p>
+<div class="Diagrams" id="Diagrams">
+  <h3><strong>Controls:</strong></h3>
+<img src="Assets/WebImages/Mouse_Aim.png" width="90" height="109" alt="Mouse_Aim" /> Aim
+<img src="Assets/WebImages/Mouse_Fire.png" width="90" height="109" alt="Mouse_Fire" /> Throw
+</div>
+<script>
+//Resize the canvas to the max inner width and height
+Canvas=document.getElementById("canvas")
+Canvas.width=window.innerWidth - (0.001*window.innerWidth)//To make it fit exactly in the page
+Canvas.height=window.innerHeight/2.5
+ctx=Canvas.getContext("2d")
+
+//Move Logo to centre of page
+LogoIMG=document.getElementById("Title")
+LogoIMG.style.marginLeft=((window.innerWidth/2)-(LogoIMG.clientWidth/2) )+"px"
+
+var Controls = document.getElementById("Diagrams")
+UpMargin = Title.clientHeight-475
+Controls.style.marginTop = UpMargin + "px" 
+
+//Draw a loading Screen over the canvas--------
+Loading = true
+LoadTimeout = setTimeout(function () {Loading = false; document.body.removeChild(LoadIcoIMG)}, 15000)//Finsih loading after 15 seconds. This is to ensure that the user is able to download all the images before they play.
+
+LoadIcoIMG = document.getElementById("LoadIcon")
+LoadIcoIMG.width = 35
+LoadIcoIMG.height = 35
+
+LoadIcoIMG.style.marginLeft = ((window.innerWidth/2)-(LoadIcoIMG.clientWidth/2) )+"px"
+LoadIcoIMG.style.marginTop = "-" + (1/2*Canvas.height - 30) + "px"
+LoadIcoIMG.style.zIndex = 10
+LoadIcoIMG.style.position = "absolute"
+</script>
+
+
+<!---------Game Initailisation -------------------------------->
+
+<!-------General Game initialisation--------->
+<script>
+
+Canvas = document.getElementById("canvas");
+ctx = canvas.getContext("2d");
+rho=1.22// When modified it changes the fluid density around objects. In(Kg/m^3) is mass density
+accg=9.81//acceleration due to gravity
+
+//Checks if it is a firefox browser and delivers a message. This is because links in my game are interpreted as popups and are immediately blocked.
+if(navigator.userAgent.indexOf("Firefox")!=-1)
+{
+	alert("Hi, it seems that you are using Mozilla Firefox. Please note that any links that open from the game are blocked as they are interpreted as pop-ups. There are links below to the pages. You can use another browser such as Chrome(Preferably), Opera or Internet Explorer as they work")
+}
+</script>
+<!-- Remember to put the rendering at the bottom, so it will always load last in the load order. This is used to help browsers who will look at the game code first and not resolve variables in other scripts in the lower load order-->
+
+<script language="JavaScript" src="Javascript/General/ReqAnimFrame.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Players.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Objects.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Methods.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Handlers.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/TurnBased.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/AI.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Physics.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Images.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/SoundEngine.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/GameManager.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/Rendering.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/SnowEffects.js"></script>
+<script language="JavaScript" src="Javascript/Game-related/MenuHandler.js"></script>
+
+
+</body>
+</html>
