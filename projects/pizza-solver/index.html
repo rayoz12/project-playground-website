@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Test threads Circle Solver</title>
+</head>
+
+<body>
+
+    <div>
+        <label>Pie: </label>
+        <select id="pizzaSelected" onchange="pizzaChanged(this.value)">
+            <option selected="selected">1</option>
+            <option>2</option>
+            <option>3</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Percentage: </label>
+        <input type="text" id="percentageIn" value="0.33" />
+        <button onclick="run()">Run</button>
+    </div>
+
+    <div>
+        <label>Percentage: </label>
+        <input type="range" min="0" max="0.95" step="0.05" value="0" id="percentageRange" oninput="rangeChange(this.value)" />
+    </div>
+
+    <div id="result"></div>
+
+    <canvas id="canvas"></canvas>
+
+    <script language="javascript">
+        // Globals
+        let pizzaSelected = 1;
+
+        document.getElementById("pizzaSelected").value = "1";
+
+        function pizzaChanged(value) {
+            pizzaSelected = value;
+            redraw();
+        }
+
+
+        var worker = new Worker('solver.js');
+
+        worker.onmessage = function (event) {
+            const result = event.data;
+            document.getElementById('result').textContent = result;
+            console.log('Got: ' + result + '\n');
+            drawLine(result);
+        };
+
+        worker.onerror = function (error) {
+            console.log('Worker error: ' + error.message + '\n');
+            throw error;
+        };
+
+        // Given a valid float percentage
+        function solve(percentage) {
+            console.log("Posting", percentage);
+            worker.postMessage(percentage);
+        }
+
+        function run(percentage) {
+            try {
+                const valueStr = document.getElementById("percentageIn").value;
+                const value = parseFloat(valueStr);
+                if (value < 0 || value >= 1) {
+                    document.getElementById('result').textContent = "Invalid Data, must be a percentage";
+                    return;
+                }
+                solve(value);
+            }
+            catch (e) {
+                console.error(e);
+            }
+        }
+
+        function rangeChange(changeVal) {
+            try {
+                const valueStr = changeVal;
+                const value = parseFloat(valueStr);
+                document.getElementById("percentageIn").value = value;
+                solve(value);
+            }
+            catch (e) {
+                console.error(e);
+            }
+            
+        }
+
+        // Canvas code
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        const pizzaSize = 1417;
+        const scale = 4;
+        const scaled = pizzaSize / scale;
+
+        function redraw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let pizzaN = pizzaSelected;
+
+            const image = new Image(scaled, scaled);
+
+            return new Promise(resolve => {
+                image.onload = function () {
+                    // Use the intrinsic size of image in CSS pixels for the canvas element
+                    canvas.width = scaled;
+                    canvas.height = scaled;
+
+                    // To use the custom size we'll have to specify the scale parameters
+                    // using the element's width and height properties - lets draw one
+                    // on top in the corner:
+                    ctx.drawImage(this, 0, 0, this.width, this.height);
+                    resolve()
+                }
+
+                image.src = `img/${pizzaN}.png`;
+            });            
+        }        
+
+        async function drawLine(height) {
+
+            const xLocation = height * scaled;
+            console.log(xLocation, height, scaled);
+
+
+            await redraw();
+
+            ctx.fillStyle = "black";
+            ctx.lineWidth = 3;
+            
+            ctx.beginPath();       // Start a new path
+            ctx.moveTo(xLocation, 0);    // Move the pen to start
+            ctx.lineTo(xLocation, scaled);  // Draw a line to (150, 100)
+            ctx.stroke();          // Render the path
+        }
+
+        redraw();
+
+    </script>
+
+    
+</body>
+
+</html>
