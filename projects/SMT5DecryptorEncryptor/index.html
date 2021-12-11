@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shin Megami Tensei 5 Decryptor / Encryptor</title>
+    <script src="aes-js.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <style>
+        .hidden {
+            visibility: hidden;
+        }
+    </style>
+    
+</head>
+<body>
+    <h1>Shin Megami Tensei V Save Encryptor / Decryptor</h1>
+
+    Encrypt and Decrypt Saves in your Browser!
+
+    <div>
+        <label for="file">Choose file to upload</label>
+        <input type="file" id="file" name="file">
+    </div>
+
+    <button id="Decrypt">Decrypt</button>
+    <button id="Encrypt">Encrypt</button>
+
+    <br />
+
+    <a id="download_decrypted" class="hidden">Download Decrypted Save</a>
+    <a id="download_encrypted" class="hidden">Download Encrypted Save</a>
+
+    <h3>Credits</h3>
+    <a href="https://github.com/ricmoo/aes-js">AES-JS project</a>
+
+    <script>
+        document.getElementById("Decrypt").addEventListener("click", decrypt);
+        document.getElementById("Encrypt").addEventListener("click", decrypt);
+
+        const downloadDecryptedLink = document.getElementById("download_decrypted");
+        const downloadEncryptedLink = document.getElementById("download_encrypted");
+
+        const fileUpload = document.getElementById("file");
+        
+        const key = [0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66];
+        async function decrypt() {
+            const file = fileUpload.files[0]; 
+            const buffer = await file.arrayBuffer();
+            const uint8Buffer = new Uint8Array(buffer);
+
+            console.log(file.name, buffer, uint8Buffer);
+            
+            var aesEcb = new aesjs.ModeOfOperation.ecb(key);
+            var decryptedBytes = aesEcb.decrypt(uint8Buffer);
+
+            const fileBlob = new Blob([decryptedBytes]);
+            const blobUrl = URL.createObjectURL(fileBlob);
+
+            console.log(decryptedBytes, fileBlob);
+            downloadDecryptedLink.href = blobUrl;
+            downloadDecryptedLink.download = file.name + ".decrypted";
+            downloadDecryptedLink.className = "";
+        }
+
+        async function decrypt() {
+            const file = fileUpload.files[0]; 
+            const buffer = await file.arrayBuffer();
+            const uint8Buffer = new Uint8Array(buffer);
+
+            console.log(file.name, buffer, uint8Buffer);
+            
+            var aesEcb = new aesjs.ModeOfOperation.ecb(key);
+            var encryptedBytes = aesEcb.encrypt(uint8Buffer);
+
+            const fileBlob = new Blob([encryptedBytes]);
+            const blobUrl = URL.createObjectURL(fileBlob);
+
+            console.log(encryptedBytes, fileBlob);
+            downloadEncryptedLink.href = blobUrl;
+            downloadEncryptedLink.download = file.name.replace(".decrypted", "");
+            downloadEncryptedLink.className = "";
+        }
+    </script>
+</body>
+</html>
