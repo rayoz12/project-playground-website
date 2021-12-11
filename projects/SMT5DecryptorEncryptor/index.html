@@ -44,7 +44,7 @@
 
     <script>
         document.getElementById("Decrypt").addEventListener("click", decrypt);
-        document.getElementById("Encrypt").addEventListener("click", decrypt);
+        document.getElementById("Encrypt").addEventListener("click", encrypt);
 
         const downloadDecryptedLink = document.getElementById("download_decrypted");
         const downloadEncryptedLink = document.getElementById("download_encrypted");
@@ -74,7 +74,7 @@
             downloadDecryptedLink.className = "";
         }
 
-        async function decrypt() {
+        async function encrypt() {
             if (fileUpload.files.length == 0) {
                 return;
             }
